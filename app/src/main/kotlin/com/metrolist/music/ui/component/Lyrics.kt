@@ -799,6 +799,8 @@ fun Lyrics(
                         // Word-by-word animation styles
                         if (hasWordTimings && lyricsAnimationStyle == LyricsAnimationStyle.NONE) {
                             val styledText = buildAnnotatedString {
+                                var textIndex = 0
+
                                 item.words.forEachIndexed { wordIndex, word ->
                                     val wordStartMs = (word.startTime * 1000).toLong()
                                     val wordEndMs = (word.endTime * 1000).toLong()
@@ -833,10 +835,25 @@ fun Lyrics(
                                         else -> FontWeight.Medium
                                     }
 
+                                    val wordStartIndex = item.text.indexOf(word.text, textIndex)
+                                    if (wordStartIndex != -1) {
+                                        if (wordStartIndex > textIndex) {
+                                            val gap = item.text.substring(textIndex, wordStartIndex)
+                                            withStyle(
+                                                style = SpanStyle(
+                                                    color = expressiveAccent.copy(alpha = if (hasWordPassed) 1f else 0.55f),
+                                                    fontWeight = if (hasWordPassed) FontWeight.Bold else FontWeight.SemiBold
+                                                )
+                                            ) {
+                                                append(gap)
+                                            }
+                                        }
+                                        textIndex = wordStartIndex + word.text.length
+                                    }
+
                                     withStyle(style = SpanStyle(color = wordColor, fontWeight = wordWeight)) {
                                         append(word.text)
                                     }
-                                    if (wordIndex < item.words.size - 1) append(" ")
                                 }
                             }
                             Text(
@@ -847,6 +864,8 @@ fun Lyrics(
                             )
                         } else if (hasWordTimings && lyricsAnimationStyle == LyricsAnimationStyle.FADE) {
                             val styledText = buildAnnotatedString {
+
+                                var textIndex = 0
                                 item.words.forEachIndexed { wordIndex, word ->
                                     val wordStartMs = (word.startTime * 1000).toLong()
                                     val wordEndMs = (word.endTime * 1000).toLong()
@@ -873,10 +892,24 @@ fun Lyrics(
                                         Shadow(color = expressiveAccent.copy(alpha = 0.3f * fadeProgress), offset = Offset.Zero, blurRadius = 8f * fadeProgress)
                                     } else null
 
+                                    val wordStartIndex = item.text.indexOf(word.text, textIndex)
+                                    if (wordStartIndex != -1) {
+                                        if (wordStartIndex > textIndex) {
+                                            val gap = item.text.substring(textIndex, wordStartIndex)
+                                            withStyle(
+                                                style = SpanStyle(
+                                                    color = expressiveAccent.copy(alpha = if (hasWordPassed) 1f else 0.55f),
+                                                    fontWeight = if (hasWordPassed) FontWeight.Bold else FontWeight.SemiBold
+                                                )
+                                            ) {
+                                                append(gap)
+                                            }
+                                        }
+                                        textIndex = wordStartIndex + word.text.length
+                                    }
                                     withStyle(style = SpanStyle(color = wordColor, fontWeight = wordWeight, shadow = wordShadow)) {
                                         append(word.text)
                                     }
-                                    if (wordIndex < item.words.size - 1) append(" ")
                                 }
                             }
                             Text(
@@ -887,6 +920,7 @@ fun Lyrics(
                             )
                         } else if (hasWordTimings && lyricsAnimationStyle == LyricsAnimationStyle.GLOW) {
                             val styledText = buildAnnotatedString {
+                                var textIndex = 0
                                 item.words.forEachIndexed { wordIndex, word ->
                                     val wordStartMs = (word.startTime * 1000).toLong()
                                     val wordEndMs = (word.endTime * 1000).toLong()
@@ -920,10 +954,24 @@ fun Lyrics(
                                         Shadow(color = expressiveAccent.copy(alpha = 0.25f), offset = Offset.Zero, blurRadius = 8f)
                                     } else null
 
+                                    val wordStartIndex = item.text.indexOf(word.text, textIndex)
+                                    if (wordStartIndex != -1) {
+                                        if (wordStartIndex > textIndex) {
+                                            val gap = item.text.substring(textIndex, wordStartIndex)
+                                            withStyle(
+                                                style = SpanStyle(
+                                                    color = expressiveAccent.copy(alpha = if (hasWordPassed) 1f else 0.55f),
+                                                    fontWeight = if (hasWordPassed) FontWeight.Bold else FontWeight.SemiBold
+                                                )
+                                            ) {
+                                                append(gap)
+                                            }
+                                        }
+                                        textIndex = wordStartIndex + word.text.length
+                                    }
                                     withStyle(style = SpanStyle(color = wordColor, fontWeight = wordWeight, shadow = wordShadow)) {
                                         append(word.text)
                                     }
-                                    if (wordIndex < item.words.size - 1) append(" ")
                                 }
                             }
                             Text(
@@ -989,6 +1037,7 @@ fun Lyrics(
                             }
                         } else if (hasWordTimings && lyricsAnimationStyle == LyricsAnimationStyle.KARAOKE) {
                             val styledText = buildAnnotatedString {
+                                var textIndex = 0
                                 item.words.forEachIndexed { wordIndex, word ->
                                     val wordStartMs = (word.startTime * 1000).toLong()
                                     val wordEndMs = (word.endTime * 1000).toLong()
@@ -1016,6 +1065,22 @@ fun Lyrics(
                                             1.0f to expressiveAccent.copy(alpha = if (fillProgress >= 0.9f) 0.95f else 0.35f)
                                         )
 
+                                        val wordStartIndex = item.text.indexOf(word.text, textIndex)
+                                        if (wordStartIndex != -1) {
+                                            if (wordStartIndex > textIndex) {
+                                                val gap = item.text.substring(textIndex, wordStartIndex)
+                                                withStyle(
+                                                    style = SpanStyle(
+                                                        color = expressiveAccent.copy(alpha = if (hasWordPassed) 1f else 0.55f),
+                                                        fontWeight = if (hasWordPassed) FontWeight.Bold else FontWeight.SemiBold
+                                                    )
+                                                ) {
+                                                    append(gap)
+                                                }
+                                            }
+                                            textIndex = wordStartIndex + word.text.length
+                                        }
+
                                         withStyle(style = SpanStyle(
                                             brush = wordBrush,
                                             fontWeight = FontWeight.ExtraBold,
@@ -1024,6 +1089,22 @@ fun Lyrics(
                                             append(word.text)
                                         }
                                     } else if (hasWordPassed && isActiveLine) {
+                                        val wordStartIndex = item.text.indexOf(word.text, textIndex)
+                                        if (wordStartIndex != -1) {
+                                            if (wordStartIndex > textIndex) {
+                                                val gap = item.text.substring(textIndex, wordStartIndex)
+                                                withStyle(
+                                                    style = SpanStyle(
+                                                        color = expressiveAccent.copy(alpha = if (hasWordPassed) 1f else 0.55f),
+                                                        fontWeight = if (hasWordPassed) FontWeight.Bold else FontWeight.SemiBold
+                                                    )
+                                                ) {
+                                                    append(gap)
+                                                }
+                                            }
+                                            textIndex = wordStartIndex + word.text.length
+                                        }
+
                                         withStyle(style = SpanStyle(
                                             color = expressiveAccent,
                                             fontWeight = FontWeight.Bold,
@@ -1033,16 +1114,31 @@ fun Lyrics(
                                         }
                                     } else {
                                         val wordColor = if (!isActiveLine) lineColor else expressiveAccent.copy(alpha = 0.35f)
+                                        val wordStartIndex = item.text.indexOf(word.text, textIndex)
+                                        if (wordStartIndex != -1) {
+                                            if (wordStartIndex > textIndex) {
+                                                val gap = item.text.substring(textIndex, wordStartIndex)
+                                                withStyle(
+                                                    style = SpanStyle(
+                                                        color = expressiveAccent.copy(alpha = if (hasWordPassed) 1f else 0.55f),
+                                                        fontWeight = if (hasWordPassed) FontWeight.Bold else FontWeight.SemiBold
+                                                    )
+                                                ) {
+                                                    append(gap)
+                                                }
+                                            }
+                                            textIndex = wordStartIndex + word.text.length
+                                        }
                                         withStyle(style = SpanStyle(color = wordColor, fontWeight = FontWeight.Medium)) {
                                             append(word.text)
                                         }
                                     }
-                                    if (wordIndex < item.words.size - 1) append(" ")
                                 }
                             }
                             Text(text = styledText, fontSize = lyricsTextSize.sp, textAlign = alignment, lineHeight = (lyricsTextSize * lyricsLineSpacing).sp)
                         } else if (hasWordTimings && lyricsAnimationStyle == LyricsAnimationStyle.APPLE) {
                             val styledText = buildAnnotatedString {
+                                var textIndex = 0
                                 item.words.forEachIndexed { wordIndex, word ->
                                     val wordStartMs = (word.startTime * 1000).toLong()
                                     val wordEndMs = (word.endTime * 1000).toLong()
@@ -1077,10 +1173,25 @@ fun Lyrics(
                                         else -> null
                                     }
 
+                                    val wordStartIndex = item.text.indexOf(word.text, textIndex)
+                                    if (wordStartIndex != -1) {
+                                        if (wordStartIndex > textIndex) {
+                                            val gap = item.text.substring(textIndex, wordStartIndex)
+                                            withStyle(
+                                                style = SpanStyle(
+                                                    color = expressiveAccent.copy(alpha = if (hasWordPassed) 1f else 0.55f),
+                                                    fontWeight = if (hasWordPassed) FontWeight.Bold else FontWeight.SemiBold
+                                                )
+                                            ) {
+                                                append(gap)
+                                            }
+                                        }
+                                        textIndex = wordStartIndex + word.text.length
+                                    }
+
                                     withStyle(style = SpanStyle(color = wordColor, fontWeight = wordWeight, shadow = wordShadow)) {
                                         append(word.text)
                                     }
-                                    if (wordIndex < item.words.size - 1) append(" ")
                                 }
                             }
                             Text(text = styledText, fontSize = lyricsTextSize.sp, textAlign = alignment, lineHeight = (lyricsTextSize * lyricsLineSpacing).sp)
